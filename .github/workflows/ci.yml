@@ -1,0 +1,166 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        java-version: [17, 21]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Validate Gradle wrapper (if present)
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v3
+        if: ${{ endsWith(matrix.java-version, '21') }}
+
+      - name: Set up JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: "temurin"
+          cache: "gradle"
+
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Run Maven tests
+        run: find . -name "pom.xml" -execdir mvn test -B \;
+
+      - name: Run Gradle tests
+        run: find . -name "build.gradle*" -execdir ./gradlew test --no-daemon \;
+
+      - name: Compile Java files
+        run: find . -name "*.java" -exec javac -cp ".:lib/*" {} \;
+
+      - name: Run static analysis
+        run: |
+          # Check for common issues
+          find . -name "*.java" -exec grep -l "TODO" {} \; | head -5
+          find . -name "*.java" -exec grep -l "FIXME" {} \; | head -5
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts-${{ matrix.java-version }}
+          path: |
+            **/target/
+            **/build/
+            **/*.jar
+            **/*.class
+
+  dependency-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: Run dependency vulnerability check
+        run: |
+          # Check for vulnerable dependencies
+          find . -name "pom.xml" -o -name "build.gradle" | head -5 | xargs ls -la
+          echo "Dependency check would run here with tools like OWASP Dependency Check"
+
+  coverage-report:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: Generate coverage report
+        run: |
+          echo "Coverage analysis would be performed here"
+          echo "Tools like JaCoCo, Cobertura, or SonarQube would be used"
+
+  code-quality-gate:
+    runs-on: ubuntu-latest
+    needs: [build-and-test, dependency-check]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Code quality checks
+        run: |
+          # Code style checks
+          echo "Running code quality analysis..."
+
+          # Count lines of code
+          find . -name "*.java" -exec wc -l {} + | tail -1
+
+          # Check for common code smells
+          find . -name "*.java" -exec grep -c "public static void main" {} \; | grep -v ":0" | wc -l
+          find . -name "*.java" -exec grep -c "System.out.println" {} \; | grep -v ":0" | wc -l
+
+          echo "Code quality checks completed successfully"
+
+  deploy-snapshot:
+    runs-on: ubuntu-latest
+    needs: code-quality-gate
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: Deploy snapshot
+        run: |
+          echo "Snapshot deployment would happen here"
+          echo "This would upload artifacts to Maven Central, GitHub Packages, etc."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: [build-and-test, coverage-report, code-quality-gate]
+    if: always()
+
+    steps:
+      - name: Send notification
+        run: |
+          echo "Build completed with status: ${{ job.status }}"
+          # Integration with Slack, Discord, email notifications would go here

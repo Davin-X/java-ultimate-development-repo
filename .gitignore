@@ -1,0 +1,55 @@
+# Java compiled class files
+*.class
+
+# Java archive files
+*.jar
+*.war
+*.ear
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS files
+.DS_Store
+
+# Windows files
+Thumbs.db
+Desktop.ini
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+
+# Maven/Gradle build directories
+target/
+build/
+.gradle/
+
+# Eclipse files
+.classpath
+.project
+.settings/
+
+# IntelliJ IDEA files
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VS Code Java workspace files
+.java/
+
+# Node modules (if any)
+node_modules/
+
+# OS temporary files
+*.tmp
+*.dart
+^.$
