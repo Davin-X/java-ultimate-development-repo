@@ -53,3 +53,21 @@ node_modules/
 *.tmp
 *.dart
 ^.$
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Build directories
+.gradle/
+build/
+target/
+
+# IDE files
+.idea/
+*.iml
+.vscode/settings.json
+
+# OS files
+.DS_Store
+Thumbs.db

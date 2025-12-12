@@ -1,56 +1,38 @@
-# 0. Getting Started with Java Development
+# 0. Getting Started with Java
 
-Welcome to your Java development journey! This section will help you set up your development environment and write your first Java programs.
+Set up your Java development environment and write your first programs.
 
-## 🎯 Section Overview
+## 🚀 Quick Setup (30 minutes)
 
-| Topic | Duration | Priority |
-|-------|----------|----------|
-| [Java Installation](documentation/Java_Installation.md) | 1-2 hours | High |
-| [IDE Setup](documentation/IDE_Setup.md) | 1-2 hours | High |
-| [First Java Program](notebooks/01_First_Java_Program.ipynb) | 30-45 mins | High |
-| [Java Development Basics](documentation/Java_Basics.md) | 2-3 hours | High |
-| [Build Tools Introduction](documentation/Build_Tools.md) | 1-2 hours | Medium |
-
-## 🚀 Quick Start Checklist
-
-### System Requirements
-- **Operating System**: Windows 10+, macOS 10.14+, Linux (Ubuntu 18.04+)
-- **RAM**: Minimum 4GB, Recommended 8GB+
-- **Disk Space**: 2GB free space
-- **Internet**: Required for downloads
-
-### 1. Install Java JDK
+### 1. Install Java 17+
 ```bash
-# Check if Java is already installed
-java -version
-
-# If not installed, download from:
-# Windows: https://adoptium.net/temurin/releases/
+# Download from: https://adoptium.net/temurin/releases/
+# Or use package manager:
 # macOS: brew install openjdk@17
-# Linux: sudo apt update && sudo apt install openjdk-17-jdk
+# Ubuntu: sudo apt install openjdk-17-jdk
+# Windows: Download installer from adoptium.net
 ```
 
-### 2. Choose and Setup IDE
-**Recommended IDEs:**
-- **IntelliJ IDEA Community Edition** (Most popular for Java)
-- **Visual Studio Code** with Java extensions
-- **Eclipse IDE**
-- **NetBeans**
-
-### 3. Verify Installation
+### 2. Verify Installation
 ```bash
-# Check Java version
-java -version
-javac -version
-
-# Check JAVA_HOME environment variable
-echo $JAVA_HOME
-
-# Test compilation
-javac HelloWorld.java
-java HelloWorld
+java -version    # Should show Java 17+
+javac -version   # Compiler version
 ```
+
+### 3. Choose Your IDE
+- **IntelliJ IDEA Community** (Recommended for beginners)
+- **VS Code** with Java extensions
+- **Eclipse IDE**
+
+## 📚 Learning Path
+
+| Step | Topic | Time | Resource |
+|------|--------|------|----------|
+| 1 | Java Installation | 30 min | [Java_Installation.md](documentation/Java_Installation.md) |
+| 2 | IDE Setup | 30 min | [IDE_Setup.md](documentation/IDE_Setup.md) |
+| 3 | First Program | 15 min | [01_First_Java_Program.ipynb](notebooks/01_First_Java_Program.ipynb) |
+| 4 | Java Basics | 1 hour | [Java_Basics.md](documentation/Java_Basics.md) |
+| 5 | Build Tools | 45 min | [Build_Tools.md](documentation/Build_Tools.md) |
 
 ## 📓 Learning Content
 
