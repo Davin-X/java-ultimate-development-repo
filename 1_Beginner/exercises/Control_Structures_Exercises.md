@@ -135,9 +135,9 @@ public class GradeCalculator {
 
 ---
 
-## Exercise 3: Switch Statements
+## Exercise 3: Switch Statements (Traditional)
 
-**Objective:** Learn switch statements for multiple choice scenarios.
+**Objective:** Learn traditional switch statements for multiple choice scenarios.
 
 ```java
 // PART 1: Day of Week Calculator
@@ -196,7 +196,286 @@ public class DayOfWeekCalculator {
 
 ---
 
-## Exercise 4: For Loops
+## Exercise 4: Modern Switch Case (Java 12+)
+
+**Objective:** Master modern switch expressions with arrow syntax, switch expressions, and pattern matching.
+
+### Part 1: Arrow Case Labels
+
+```java
+// EXERCISE 4.1: Convert traditional switch to modern arrow syntax
+public class ModernDayCalculator {
+
+    public static void main(String[] args) {
+        int[] testDays = {1, 3, 5, 7, 8, 0};
+
+        for (int dayNumber : testDays) {
+            System.out.print("Day " + dayNumber + ": ");
+
+            // TODO: Rewrite using modern arrow syntax (->)
+            // Benefits: No break needed, no fall-through bugs
+            String dayName = switch (dayNumber) {
+                // case 1 -> "Monday - Start of work week";
+                // Add remaining cases...
+                // Hint: Use case 6, 7 -> "Weekend!" for multiple cases
+                default -> "Invalid day number (use 1-7)";
+            };
+            System.out.println(dayName);
+        }
+    }
+}
+```
+
+### Part 2: Switch Expressions with Enums
+
+```java
+// EXERCISE 4.2: Switch expressions with enums
+enum Season {
+    SPRING, SUMMER, FALL, WINTER
+}
+
+enum Month {
+    JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE,
+    JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER
+}
+
+public class SeasonSwitchExercise {
+
+    public static void main(String[] args) {
+        
+        // Part A: Get season description using switch expression
+        Season currentSeason = Season.SUMMER;
+        
+        // TODO: Use switch expression to get description
+        String description = switch (currentSeason) {
+            // case SPRING -> "Flowers blooming, weather warming up";
+            // Add remaining seasons...
+            default -> "Unknown season";
+        };
+        System.out.println(currentSeason + ": " + description);
+        
+        // Part B: Get months for each season
+        System.out.println("\\nMonths by Season:");
+        for (Season season : Season.values()) {
+            System.out.print(season + ": ");
+            
+            // TODO: Use switch expression with multiple case labels
+            String months = switch (season) {
+                // case SPRING -> "March, April, May";
+                // Add remaining seasons...
+                default -> "Unknown";
+            };
+            System.out.println(months);
+        }
+        
+        // Part C: Get number of days in a month (simplified)
+        Month testMonth = Month.FEBRUARY;
+        
+        // TODO: Use switch expression to get days
+        int days = switch (testMonth) {
+            // case JANUARY, MARCH, MAY, JULY, AUGUST, OCTOBER, DECEMBER -> 31;
+            // case APRIL, JUNE, SEPTEMBER, NOVEMBER -> 30;
+            // case FEBRUARY -> 28; // Simplified, ignore leap year
+            default -> 0;
+        };
+        System.out.println("\\n" + testMonth + " has " + days + " days");
+    }
+}
+```
+
+### Part 3: Switch Expression with Blocks and yield
+
+```java
+// EXERCISE 4.3: Complex switch with blocks and yield
+public class TrafficLightSimulator {
+
+    enum LightColor {
+        RED, YELLOW, GREEN
+    }
+
+    public static void main(String[] args) {
+        
+        LightColor[] testColors = {LightColor.RED, LightColor.YELLOW, LightColor.GREEN};
+        
+        for (LightColor color : testColors) {
+            String action = switch (color) {
+                case RED -> {
+                    System.out.println("[" + color + "] Stopping all traffic...");
+                    yield "STOP";
+                }
+                case YELLOW -> {
+                    System.out.println("[" + color + "] Warning: light changing...");
+                    yield "CAUTION";
+                }
+                case GREEN -> {
+                    System.out.println("[" + color + "] Traffic flowing...");
+                    yield "GO";
+                }
+            };
+            System.out.println("Action: " + action + "\\n");
+        }
+    }
+}
+```
+
+### Part 4: Pattern Matching for Switch (Java 17+)
+
+```java
+// EXERCISE 4.4: Pattern matching switch - type patterns
+public class TypePatternMatchingExercise {
+
+    public static void main(String[] args) {
+        
+        // Test with different object types
+        Object[] testObjects = {"Hello World", 42, 3.14159, true, 100L, null};
+        
+        System.out.println("=== Type Pattern Matching ===");
+        for (Object obj : testObjects) {
+            String result = describeObject(obj);
+            System.out.println(obj + " → " + result);
+        }
+    }
+    
+    // TODO: Implement pattern matching switch for type detection
+    public static String describeObject(Object obj) {
+        // Handle null case first
+        if (obj == null) {
+            return "null value";
+        }
+        
+        // Use pattern matching switch (Java 17+)
+        return switch (obj) {
+            // case String s -> "String with length " + s.length();
+            // case Integer i -> "Integer: " + i + (i > 0 ? " (positive)" : i < 0 ? " (negative)" : " (zero)");
+            // case Double d -> "Double: " + d;
+            // case Boolean b -> "Boolean: " + (b ? "true" : "false");
+            // case Long l -> "Long: " + l;
+            // default -> "Unknown type: " + obj.getClass().getSimpleName();
+            case null -> "null";
+            default -> "unknown";
+        };
+    }
+}
+```
+
+### Part 5: Pattern Matching with Records (Java 16+)
+
+```java
+// EXERCISE 4.5: Records and sealed interfaces with pattern matching
+// Define record types
+record Employee(String name, int id, double salary) {}
+record Manager(String name, int id, double salary, String department) extends Person {}
+record Contractor(String name, int id, double hourlyRate, int hoursWorked) extends Person {}
+
+// Sealed interface for exhaustive matching
+sealed interface Person permits Employee, Manager, Contractor {}
+
+public class PersonPayrollProcessor {
+
+    public static void main(String[] args) {
+        
+        // Create different person types
+        Person alice = new Employee("Alice", 1001, 75000.0);
+        Person bob = new Manager("Bob", 1002, 95000.0, "Engineering");
+        Person charlie = new Contractor("Charlie", 2001, 85.0, 160);
+        
+        Person[] people = {alice, bob, charlie};
+        
+        System.out.println("=== Payroll Processing ===");
+        for (Person person : people) {
+            double pay = calculatePay(person);
+            System.out.println(getName(person) + ": $" + String.format("%.2f", pay));
+        }
+    }
+    
+    // TODO: Implement pattern matching to get name
+    public static String getName(Person person) {
+        return switch (person) {
+            // Use pattern matching to extract name from each type
+            // case Employee e -> e.name();
+            // case Manager m -> m.name();
+            // case Contractor c -> c.name();
+            case null -> "Unknown";
+            default -> "Unknown";
+        };
+    }
+    
+    // TODO: Implement pattern matching to calculate pay
+    public static double calculatePay(Person person) {
+        return switch (person) {
+            // case Employee e -> e.salary();
+            // case Manager m -> m.salary() * 1.1; // Managers get 10% bonus
+            // case Contractor c -> c.hourlyRate() * c.hoursWorked();
+            case null -> 0.0;
+            default -> 0.0;
+        };
+    }
+}
+```
+
+### Part 6: Traditional vs Modern Switch Comparison
+
+```java
+// EXERCISE 4.6: Refactor traditional switch to modern syntax
+public class SwitchRefactoringExercise {
+
+    public static void main(String[] args) {
+        
+        System.out.println("=== Grade Calculator Comparison ===");
+        
+        // Test scores
+        int[] scores = {95, 82, 76, 65, 58};
+        
+        for (int score : scores) {
+            System.out.println("Score: " + score);
+            System.out.println("  Traditional: " + traditionalGrade(score));
+            System.out.println("  Modern: " + modernGrade(score));
+        }
+    }
+    
+    // Traditional switch (pre-Java 12)
+    public static String traditionalGrade(int score) {
+        String grade;
+        int gradeLevel = score / 10;
+        
+        switch (gradeLevel) {
+            case 10:
+            case 9:
+                grade = "A";
+                break;
+            case 8:
+                grade = "B";
+                break;
+            case 7:
+                grade = "C";
+                break;
+            case 6:
+                grade = "D";
+                break;
+            default:
+                grade = "F";
+                break;
+        }
+        return grade;
+    }
+    
+    // TODO: Refactor to modern switch expression
+    public static String modernGrade(int score) {
+        int gradeLevel = score / 10;
+        
+        return switch (gradeLevel) {
+            // Rewrite using modern arrow syntax
+            // case 10, 9 -> "A";
+            // Add remaining cases...
+            default -> "F";
+        };
+    }
+}
+```
+
+---
+
+## Exercise 5: For Loops
 
 **Objective:** Master for loops for counted iterations.
 
@@ -267,7 +546,7 @@ public class ArrayForLoops {
 
 ---
 
-## Exercise 5: While & Do-While Loops
+## Exercise 6: While & Do-While Loops
 
 **Objective:** Practice loops that execute based on conditions rather than counts.
 
@@ -358,7 +637,7 @@ public class WhileLoops {
 
 ---
 
-## Exercise 6: Complete Control Flow Mastery
+## Exercise 7: Complete Control Flow Mastery
 
 **Objective:** Combine all control structures in complex algorithms.
 
